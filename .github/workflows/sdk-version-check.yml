@@ -26,13 +26,14 @@ jobs:
           echo "Detected SDK version: $VERSION"
 
       - name: Check if version exists on npm
+        id: check
         run: |
           VERSION="${{ steps.extract-version.outputs.version }}"
           echo "Checking if @wraith-protocol/sdk@$VERSION exists on npm..."
           
           if npm view @wraith-protocol/sdk@$VERSION version > /dev/null 2>&1; then
             echo "✅ Version $VERSION exists on npm"
-            echo "SDK_VERSION=$VERSION" >> $GITHUB_ENV
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "❌ Version $VERSION does not exist on npm"
             echo "Please ensure the SDK version is published before updating docs"
@@ -42,5 +43,5 @@ jobs:
 
       - name: Output verified version
         run: |
-          echo "Verified SDK version: ${{ env.SDK_VERSION }}"
+          echo "Verified SDK version: ${{ steps.check.outputs.version }}"
           echo "This version will be used for all docs validation checks"
